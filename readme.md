@@ -5,9 +5,9 @@
 
 ## A step-by-step guide to enabling open data sharing of Databricks Unity Catalog assets with Microsoft Purview 
 
-Consider a scenario where an analyst using Power BI needs to securely access and query data assets in a Databricks workspace—without having direct access to the workspace itself. Non-Databricks users can take advantage of[Delta Sharing](https://learn.microsoft.com/en-ca/azure/databricks/delta-sharing/)in Databricks, which enables secure data access to data and AI assets in Databricks for users inside or outside your organization through the Databricks[open sharing protocol](https://learn.microsoft.com/en-ca/azure/databricks/delta-sharing/share-data-open). Additionally, since these users would not have access to Databricks Catalog Explorer—hindering their ability to find any Unity Catalog-managed data—Microsoft Purview can be used to allow users from across your organization to discover and request access securely to this data. By leveraging Microsoft Purview’s integration with Unity Catalog, Purview users can discover and access Unity Catalog-managed data in a governed and secure manner.
+Consider a scenario where an analyst using Power BI needs to securely access and query data assets in a Databricks workspace—without having direct access to the workspace itself. Non-Databricks users can take advantage of [Delta Sharing](https://learn.microsoft.com/en-ca/azure/databricks/delta-sharing/) in Databricks, which enables secure data access to data and AI assets in Databricks for users inside or outside your organization through the Databricks [open sharing protocol](https://learn.microsoft.com/en-ca/azure/databricks/delta-sharing/share-data-open). Additionally, since these users would not have access to Databricks Catalog Explorer—hindering their ability to find any Unity Catalog-managed data—Microsoft Purview can be used to allow users from across your organization to discover and request access securely to this data. By leveraging Microsoft Purview’s integration with Unity Catalog, Purview users can discover and access Unity Catalog-managed data in a governed and secure manner.
 
-The following step-by-step guidance explains how to enable external users to explore and request access to data assets in a Databricks workspace—without having direct access to that workspace—by simply using the Microsoft Purview UI. By leveraging Purview’s[Azure Databricks Unity Catalog connector](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI), the metadata for the assets in Unity Catalog is made discoverable in the Purview data map. The ability to request and grant access to Unity Catalog objects in an automated fashion is made possible through Purview’s self-service access workflows, in conjunction with calling the Databricks REST API, as shown below.
+The following step-by-step guidance explains how to enable external users to explore and request access to data assets in a Databricks workspace—without having direct access to that workspace—by simply using the Microsoft Purview UI. By leveraging Purview’s [Azure Databricks Unity Catalog connector](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI), the metadata for the assets in Unity Catalog is made discoverable in the Purview data map. The ability to request and grant access to Unity Catalog objects in an automated fashion is made possible through Purview’s self-service access workflows, in conjunction with calling the Databricks REST API, as shown below.
 
 ![Automation Workflow](/images/Automation_Purview-UC-Workflow.png)
 
@@ -18,7 +18,7 @@ The following steps will automate access requests to Databricks Unity Catalog us
 - [Setup service principal for Azure Databricks authentication and add it as a credential in Purview](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=SP#tabpanel_1_SP)
 - [Setup connection to Azure Databricks Unity Catalog from Microsoft Purview](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI)
 - [Scan Azure Databricks to automatically identify assets in Microsoft Purview](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI#scan)
-- Confirm availability of assets (e.g., Databricks tables) by[browsing and searching in the Microsoft Purview Unified Catalog](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI#browse-and-search-assets)
+- Confirm availability of assets (e.g., Databricks tables) by [browsing and searching in the Microsoft Purview Unified Catalog](https://learn.microsoft.com/en-us/purview/register-scan-azure-databricks-unity-catalog?tabs=MI#browse-and-search-assets)
 
 ### Step 2: Create Databricks notebook
 
@@ -216,7 +216,7 @@ Create a new Databricks workflow as shown below with the notebook created above 
 
 ![Configure Purview workflow](/images/Screenshots/1.%20Create%20Purview%20Workflow.png)
 
-2 - When adding the new workflow, select “Governance” as theworkflow type, select “Data access request” as thetemplate, and provide aname, e.g., “Databricks access request”. A generic template of the workflow is generated for data access requests, we will need to modify this to suit our scenario.Deletethe action containing the “condition” action to clean the workflow slate as shown below.
+2 - When adding the new workflow, select “Governance” as the workflow type, select “Data access request” as thetemplate, and provide aname, e.g., “Databricks access request”. A generic template of the workflow is generated for data access requests, we will need to modify this to suit our scenario. Delete the action containing the “condition” action to clean the workflow slate as shown below.
 
 ![Clean the workflow slate](/images/Screenshots/2.%20Clean%20the%20workflow%20slate.png)
 
@@ -224,7 +224,7 @@ Create a new Databricks workflow as shown below with the notebook created above 
 
 ![Modify approval step](/images/Screenshots/3.%20Modify%20approval%20step.png)
 
-4 - Create a new step/action and choose “condition”. Select “Add dynamic content” and select “Approval.Outcome”.
+4 - Create a new step/action and choose “condition”. Select “Add dynamic content” and select `Approval.Outcome`.
 
 ![Create new condition and dynamic content](/images/Screenshots/4.%20Create%20new%20condition%20and%20add%20dynamic%20content.png)
 
@@ -232,7 +232,7 @@ Create a new Databricks workflow as shown below with the notebook created above 
 
 ![Set condition to approved](/images/Screenshots/5.%20Set%20condition%20to%20approved.png)
 
-6 - Create “send email notification” action for the “If no” condition (on the right) by modifying the title, subject, message body and recipient (add dynamic content then select “Workflow.Requestor) as follows:
+6 - Create “send email notification” action for the “If no” condition (on the right) by modifying the title, subject, message body and recipient (add dynamic content then select `Workflow.Requestor`) as follows:
 
 ![Request rejected workflow](/images/Screenshots/6.%20Request%20rejected%20workflow.png)
 
@@ -261,7 +261,7 @@ Create a new Databricks workflow as shown below with the notebook created above 
 ```
 
 > [!Note]
-> Use “Add dynamic content” to pass the asset’s fully qualified name (Asset.Fully Qualified Name⁠) and requestor’s object id  (⁠Workflow.Requestor⁠) as parameters to the Databricks workflow.
+> Use “Add dynamic content” to pass the asset’s fully qualified name `Asset.Fully Qualified Name⁠` and requestor’s object id  `⁠Workflow.Requestor⁠` as parameters to the Databricks workflow.
 
 - Authentication: Service Principal
 - Credential: `<service-principal>`
@@ -286,7 +286,7 @@ Create a new Databricks workflow as shown below with the notebook created above 
 
 ![Extract URL](/images/Screenshots/10.%20Extract%20URL.png)
 
-- Content: Use the “Add dynamic content” option to insert the “Http.Body” variable from the “Get Requestor Email” HTTP action created previously.
+- Content: Use the “Add dynamic content” option to insert the `Http.Body` variable from the “Get Requestor Email” HTTP action created previously.
 - Schema:
 
 ```json
@@ -372,12 +372,13 @@ Create a new Databricks workflow as shown below with the notebook created above 
 }
 ```
 
-(v)Send email notification:
+(v) Send email notification:
 
 ![Send approval email with URL](/images/Screenshots/11.%20Send%20approval%20email%20with%20URL.png)
 
 - Subject: Write “Access Request – APPROVED” or something similar.
-- Message body: Write the message you would like to send and use “Add dynamic content” to dynamically pass the access URL for the Delta Share to the requestor by inserting the following expression:`first(outputs('Extract URL')['tokens'])['activation_url']`
+- Message body: Write the message you would like to send and use “Add dynamic content” to dynamically pass the access URL for the Delta Share to the requestor by inserting the following expression:
+    - `first(outputs('Extract URL')['tokens'])['activation_url']`
 
 8 - Apply workflow to the appropriate scope and save it.
 
