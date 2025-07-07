@@ -246,9 +246,23 @@ Create a new Databricks workflow as shown below with the notebook created above 
 - Method: `POST`
 - Path: `/api/2.2/jobs/run-now`
 - Body:
-    ```json
-    {"job_id": <databricks-job-id>,"queue": { "enabled": true },"notebook_params":{"assetFQName":"⁠Asset.Fully Qualified Name⁠","requestorID":"⁠Workflow.Requestor⁠"}}Note: Use “Add dynamic content” to pass the asset’s fully qualified name (Asset.Fully Qualified Name⁠) and requestor’s object id  (⁠Workflow.Requestor⁠) as parameters to the Databricks workflow.
-    ```
+
+```json
+    {
+    "job_id": "<databricks-job-id>",
+    "queue": {
+        "enabled": true
+        },
+    "notebook_params": {
+        "assetFQName": "Asset.Fully Qualified Name",
+        "requestorID": "Workflow.Requestor"
+        }
+    }
+```
+
+> [!Note]
+> Use “Add dynamic content” to pass the asset’s fully qualified name (Asset.Fully Qualified Name⁠) and requestor’s object id  (⁠Workflow.Requestor⁠) as parameters to the Databricks workflow.
+
 - Authentication: Service Principal
 - Credential: `<service-principal>`
 - Audience: `2ff814a6-3304-4ab8-85cb-cd0e6f879c1d/.default`
@@ -272,10 +286,91 @@ Create a new Databricks workflow as shown below with the notebook created above 
 
 ![Extract URL](/images/Screenshots/10.%20Extract%20URL.png)
 
-- Content: Use the “Add dynamic content” option to insert the “Http.Body” variable from the “Get Requestor Email” HTTP action created previously. 
-    ```json
-    Schema:{"type": "object","properties": {"created_by": {"type": "string"},"name": {"type": "string"},"updated_by": {"type": "string"},"securable_kind": {"type": "string"},"authentication_type": {"type": "string"},"id": {"type": "string"},"properties_kvpairs": {"type": "object","properties": {"properties": {"type": "object","properties": {"databricks.name": {"type": "string"}}}}},"owner": {"type": "string"},"updated_at": {"type": "integer"},"full_name": {"type": "string"},"securable_type": {"type": "string"},"created_at": {"type": "integer"},"tokens": {"type": "array","items": {"type": "object","properties": {"updated_by": {"type": "string"},"id": {"type": "string"},"created_at": {"type": "integer"},"updated_at": {"type": "integer"},"activation_url": {"type": "string"},"created_by": {"type": "string"},"expiration_time": {"type": "integer"}}}}}}
-    ```
+- Content: Use the “Add dynamic content” option to insert the “Http.Body” variable from the “Get Requestor Email” HTTP action created previously.
+- Schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "created_by": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "updated_by": {
+      "type": "string"
+    },
+    "securable_kind": {
+      "type": "string"
+    },
+    "authentication_type": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "properties_kvpairs": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "type": "object",
+          "properties": {
+            "databricks.name": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "owner": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "integer"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "securable_type": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "integer"
+    },
+    "tokens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "updated_by": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "activation_url": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "expiration_time": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 (v)Send email notification:
 
